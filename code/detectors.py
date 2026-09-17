@@ -220,6 +220,7 @@ class D4Markov(BaseDetector):
         self.class_log_start: dict[str, np.ndarray] = {}
         self.agent_sessions: dict[str, int] = {}
         self.n_tools = len(TOOL_NAMES)
+        self._ref = {"min3": (0.0, 1.0), "drop": (0.0, 1.0)}  # replaced by calibrate()
 
     @staticmethod
     def _counts_from_sequences(sequences: list[list[int]], k_tools: int) -> tuple[np.ndarray, np.ndarray]:
@@ -292,18 +293,51 @@ class D4Markov(BaseDetector):
             cls, next(iter(self.class_log_start.values()))
         )
 
-    def session_mean_logprob(self, agent_id: str, tools: list[int]) -> float:
-        """Mean log-probability of the tool-call sequence (start + transitions)."""
+    def session_logprob_stats(self, agent_id: str, tools: list[int]) -> tuple[float, float, float]:
+        """(mean, min-3-mean, split-half drop) of per-step log-probabilities.
+
+        min-3-mean averages the three least likely steps: an unlikely transition
+        occurs somewhere in every session by chance, so the mean dilutes a short
+        foreign window while the min-k statistic concentrates it.
+        split-half drop = mean(logP of first half) - mean(logP of second half):
+        a mid-session regime change (behavioral discontinuity) makes the second
+        half of the sequence markedly less likely under the agent's own chain.
+        """
         if not tools:
-            return 0.0
+            return 0.0, 0.0, 0.0
         logp, log_start = self._model_for(agent_id)
-        total = log_start[tools[0]]
-        for a, b in zip(tools, tools[1:]):
-            total += logp[a, b]
-        return float(total / len(tools))
+        vals = [log_start[tools[0]]]
+        vals.extend(logp[a, b] for a, b in zip(tools, tools[1:]))
+        arr = np.asarray(vals, dtype=float)
+        k = min(3, len(arr))
+        half = len(arr) // 2
+        drop = float(arr[:half].mean() - arr[half:].mean()) if 1 <= half < len(arr) else 0.0
+        return float(arr.mean()), float(np.sort(arr)[:k].mean()), drop
+
+    def session_mean_logprob(self, agent_id: str, tools: list[int]) -> float:
+        return self.session_logprob_stats(agent_id, tools)[0]
+
+    def calibrate(self, calib_features: pd.DataFrame) -> "D4Markov":
+        """Robust reference stats for the two sequence statistics (median, IQR scale)."""
+        m3 = -calib_features["transition_min3_logprob_mean"].to_numpy(dtype=float)
+        dr = calib_features["transition_drop"].to_numpy(dtype=float)
+        self._ref = {
+            "min3": (float(np.median(m3)), float(max(np.quantile(m3, 0.75) - np.quantile(m3, 0.25), 1e-3))),
+            "drop": (float(np.median(dr)), float(max(np.quantile(dr, 0.75) - np.quantile(dr, 0.25), 1e-3))),
+        }
+        return self
 
     def score(self, features: pd.DataFrame) -> np.ndarray:
-        return -features["transition_logprob_mean"].to_numpy(dtype=float)
+        """Max of the two robust z-scored sequence statistics (per-row, threshold-comparable).
+
+        - min-3 step likelihood catches foreign-transition windows (loops,
+          exfiltration bursts, circumvention sequences).
+        - split-half drop catches behavioral discontinuity (prompt injection).
+        """
+        ref = self._ref
+        zm = (-features["transition_min3_logprob_mean"].to_numpy(dtype=float) - ref["min3"][0]) / ref["min3"][1]
+        zd = (features["transition_drop"].to_numpy(dtype=float) - ref["drop"][0]) / ref["drop"][1]
+        return np.maximum(zm, zd)
 
 
 # ---------------------------------------------------------------------------

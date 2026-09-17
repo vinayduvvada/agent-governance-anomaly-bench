@@ -78,6 +78,8 @@ FEATURE_NAMES = (
     "gated_call_count",
     "new_tool_count",
     "transition_logprob_mean",
+    "transition_min3_logprob_mean",
+    "transition_drop",
 )
 
 # Heavy-tailed non-negative features are log1p-transformed before D3 scaling.
@@ -295,11 +297,13 @@ def extract_features(arr: dict, agent_ctx: dict, scope_families: np.ndarray, k: 
 
     new_tool_count = int(sum(1 for t in calls_tool if int(t) not in agent_ctx["permitted_idx"]))
 
-    # Sequence likelihood under the agent's own chain (feature shared with D4)
+    # Sequence likelihood under the agent's own chain (features shared with D4)
     if chain_model is not None and n_calls:
-        transition_logprob_mean = chain_model.session_mean_logprob(agent_ctx["agent_id"], calls_tool.tolist())
+        transition_logprob_mean, transition_min3, transition_drop = chain_model.session_logprob_stats(
+            agent_ctx["agent_id"], calls_tool.tolist()
+        )
     else:
-        transition_logprob_mean = 0.0
+        transition_logprob_mean, transition_min3, transition_drop = 0.0, 0.0, 0.0
 
     return {
         "n_events": n,
@@ -338,6 +342,8 @@ def extract_features(arr: dict, agent_ctx: dict, scope_families: np.ndarray, k: 
         "gated_call_count": gated_calls,
         "new_tool_count": new_tool_count,
         "transition_logprob_mean": transition_logprob_mean,
+        "transition_min3_logprob_mean": transition_min3,
+        "transition_drop": transition_drop,
     }
 
 

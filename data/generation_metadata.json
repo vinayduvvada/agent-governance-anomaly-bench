@@ -12262,8 +12262,8 @@
       "silent_failure_masking": 110
     },
     "checksums_sha256": {
-      "anomaly_labels.csv": "ce19cc7e6db776f1de9ceb8ff6356111b8b008ed64df20eee0a6b02041243f87",
-      "synthetic_sessions.csv": "863d6e16de85195b1c60dfec45bb447a5fc4a7bf8488c404a7e24a0b99b4d029"
+      "anomaly_labels.csv": "566587e37a8e02ebfbe36e8526db9f15b56ef40c4d1aa79cd0e6dae170a1eede",
+      "synthetic_sessions.csv": "8f72462045dbfe36d77d9553a84be4c8da073632b2de33e629962aa6cef6ec69"
     },
     "files": {
       "anomaly_labels_csv": "anomaly_labels.csv",
@@ -12272,7 +12272,7 @@
     "n_anomalous_sessions": 985,
     "n_calibration_sessions": 29622,
     "n_eval_sessions": 19755,
-    "n_events": 524497,
+    "n_events": 525123,
     "n_sessions": 49377,
     "notes": "All anomalies are injected into the evaluation split. Sessions absent from anomaly_labels.csv are benign by construction.",
     "prevalence": 0.02

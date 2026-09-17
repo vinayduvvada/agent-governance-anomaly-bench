@@ -445,68 +445,163 @@ def inject_data_exfiltration(events, ctx, rng):
 
 
 def inject_prompt_injection(events, ctx, rng):
+    """Behavioral-discontinuity injection, policy-invisible by construction.
+
+    The pivot window's tool identities (and their family-consistent scopes) are
+    re-sampled from the *most divergent* other task-class chain restricted to
+    the agent's permitted, ungated, non-egress tools. Per-call latency/token/
+    cost draws and session aggregates are preserved, so no aggregate or policy
+    rule (scope, denial, retry, egress, budget, gate) is tripped by design; the
+    only change is the transition structure.
+    """
     p = INJECTION_PARAMS["prompt_injection_compromise"]
     agent = ctx["agent"]
     calls = event_positions(events, "tool_call")
     start_frac = float(rng.uniform(*p["start_fraction_range"]))
-    start_i = min(int(round(len(calls) * start_frac)), max(0, len(calls) - 2))
-    w_max = int(rng.integers(p["pivot_window_events_range"][0], p["pivot_window_events_range"][1] + 1))
-    w = max(1, min(w_max, len(calls) - start_i))
     lo, hi = p["pivot_window_events_range"]
-    if w < lo:
-        w = min(len(calls) - start_i, lo)
+    # Guarantee the pivot window has room for [lo, hi] calls: shift the start
+    # earlier when the sampled fraction would leave too few calls behind.
+    start_i = min(int(round(len(calls) * start_frac)), max(0, len(calls) - lo))
+    w = min(int(rng.integers(lo, hi + 1)), len(calls) - start_i)
     replaced = calls[start_i: start_i + w]
 
-    foreign_cls = str(rng.choice([c for c in TASK_CLASS_ORDER if c != agent["task_class"]]))
-    fpal = TASK_CLASS_PROFILES[foreign_cls]["palette"]
-    inter = [t for t in ctx["permitted"] if t in fpal]
-    if len(inter) >= 2:
-        fbase = class_base_matrix(fpal, TASK_CLASS_PROFILES[foreign_cls]["workflow_template"])
+    # Policy-invisible alphabet: permitted, non-egress tools. Gated tools are
+    # allowed because gate-consistent approvals are repaired below; egress is
+    # excluded so the window cannot trip egress-share rules.
+    stealth = [t for t in ctx["permitted"] if not TOOLS[t]["egress"]]
+    if len(stealth) < 2:
+        stealth = list(ctx["permitted"])
+
+    # Restrict the agent's own chain to the stealth alphabet.
+    s_idx = [ctx["permitted"].index(t) for t in stealth]
+    a_chain = ctx["chain"][np.ix_(s_idx, s_idx)]
+    a_chain = a_chain / a_chain.sum(axis=1, keepdims=True)
+
+    # Choose the foreign class with maximal mean KL divergence on the shared alphabet.
+    best = None
+    for cls in TASK_CLASS_ORDER:
+        if cls == agent["task_class"]:
+            continue
+        fpal = TASK_CLASS_PROFILES[cls]["palette"]
+        inter = [t for t in stealth if t in fpal]
+        if len(inter) < 2:
+            continue
+        fbase = class_base_matrix(fpal, TASK_CLASS_PROFILES[cls]["workflow_template"])
         keep = [fpal.index(t) for t in inter]
         fm = fbase[np.ix_(keep, keep)]
         fm = fm / fm.sum(axis=1, keepdims=True)
-        cur = int(rng.integers(len(inter)))
-        seq = [inter[cur]]
-        for _ in range(w - 1):
-            cur = int(rng.choice(len(inter), p=fm[cur]))
-            seq.append(inter[cur])
-    else:  # fallback: uniform draw over permitted tools
+        s_pos = [stealth.index(t) for t in inter]
+        am = a_chain[np.ix_(s_pos, s_pos)]
+        am = am / am.sum(axis=1, keepdims=True)
+        kl = float(np.mean(np.sum(fm * (np.log(fm + 1e-12) - np.log(am + 1e-12)), axis=1)))
+        if best is None or kl > best[0]:
+            best = (kl, cls, fm, inter)
+    if best is None:  # degenerate fallback: any permitted tool in arbitrary order
         seq = [str(rng.choice(ctx["permitted"])) for _ in range(w)]
+        foreign_cls = "n/a"
+    else:
+        kld, foreign_cls, fm, inter = best
 
-    for i, tool in zip(replaced, seq):
-        events[i]["tool_name"] = tool  # aggregates (latency/tokens/cost/scope) preserved — stealthy by design
+        def sample_foreign() -> list[str]:
+            cur = int(rng.integers(len(inter)))
+            s = [inter[cur]]
+            for _ in range(w - 1):
+                cur = int(rng.choice(len(inter), p=fm[cur]))
+                s.append(inter[cur])
+            return s
 
+        def agent_mean_logprob(s: list[str]) -> float:
+            pos = [stealth.index(t) for t in s]
+            vals = [np.log(max(a_chain[pos[i], pos[i + 1]], 1e-12)) for i in range(len(pos) - 1)]
+            return float(np.mean(vals)) if vals else 0.0
+
+        # Draw candidate realizations from the foreign regime and commit the one
+        # that is most divergent under the agent's own chain: a compromised
+        # objective is steered away from (not accidentally into) the agent's
+        # habitual transitions.
+        candidates = [sample_foreign() for _ in range(12)]
+        seq = min(candidates, key=agent_mean_logprob)
+        foreign_cls = f"{foreign_cls}|divergence={r6(kld)}"
+
+    # Commit the hijack by object reference (insertions shift list indices):
+    # tool identity + family-consistent scope; per-call latency/tokens/cost are
+    # untouched; gated hijacked tools get a gate-consistent approval inserted.
+    replaced_objs = [events[i] for i in replaced]
+    n_repairs = 0
+    for obj, tool in zip(replaced_objs, seq):
+        obj["tool_name"] = tool
+        cands = scope_candidates(tool, agent["declared_scopes"])
+        if cands:
+            obj["target_scope"] = cands[int(rng.integers(len(cands)))]
+        if TOOLS[tool]["gated"]:
+            idx = next(i for i, e in enumerate(events) if e is obj)
+            has_prior = any(
+                e["event_type"] == "permission_request" and e["tool_name"] == tool and e["approved"] is True
+                for e in events[:idx]
+            )
+            if not has_prior:
+                call_ts = obj["ts"]
+                prev_ts = events[idx - 1]["ts"] if idx > 0 else call_ts - 2.0
+                req_ts = call_ts - 0.6
+                if req_ts <= prev_ts:
+                    shift = (prev_ts + 0.6) - call_ts + 0.1
+                    for e in events[idx:]:
+                        e["ts"] += shift
+                    call_ts = obj["ts"]
+                    req_ts = call_ts - 0.6
+                events.insert(idx, make_event(req_ts, "permission_request", tool,
+                                              float(rng.lognormal(np.log(2400.0), 0.5)), 0,
+                                              PERMISSION_EVENT_FEE, obj["target_scope"], True))
+                n_repairs += 1
+
+    vts = max(obj["ts"] for obj in replaced_objs)
     return events, {
-        "violation_ts": events[replaced[-1]]["ts"],
-        "injection_start_ts": events[replaced[0]]["ts"],
-        "n_injected_events": len(replaced),
+        "violation_ts": vts,
+        "injection_start_ts": min(obj["ts"] for obj in replaced_objs),
+        "n_injected_events": len(replaced_objs),
         "params": {"start_fraction": r6(start_frac), "window": w, "foreign_class": foreign_cls,
-                   "hijacked_tools": seq},
+                   "hijacked_tools": seq, "stealth": "permitted_non_egress_alphabet",
+                   "gate_repairs": n_repairs, "aggregates_preserved": True},
     }
 
 
 def inject_cost_anomaly(events, ctx, rng):
+    """Token/spend drift: inflate per-call tokens from a session pivot onward.
+
+    The inflation is re-asserted (bounded iterations) until the session's
+    cumulative cost crosses the budget boundary, so every instance materializes
+    the violation its class defines (3x the agent's cost baseline).
+    """
     p = INJECTION_PARAMS["cost_anomaly"]
     calls = event_positions(events, "tool_call")
     start_frac = float(rng.uniform(*p["start_fraction_range"]))
     mult = float(rng.uniform(*p["token_multiplier_range"]))
     start = min(int(round(len(calls) * start_frac)), max(0, len(calls) - 1))
-    n_mutated = 0
-    for i in calls[start:]:
-        e = events[i]
-        meta = TOOLS[e["tool_name"]]
-        e["tokens"] = int(round(e["tokens"] * mult))
-        e["cost"] = e["tokens"] / 1000.0 * meta["price_per_1k"] + meta["call_fee"]
-        n_mutated += 1
     baseline = ctx["agent"]["cost_baseline"]
+
+    def inflate(factor: float) -> None:
+        for i in calls[start:]:
+            e = events[i]
+            meta = TOOLS[e["tool_name"]]
+            e["tokens"] = int(round(e["tokens"] * factor))
+            e["cost"] = e["tokens"] / 1000.0 * meta["price_per_1k"] + meta["call_fee"]
+
+    inflate(mult)
+    extra_rounds = 0
     vts = budget_crossing_ts(events, baseline, p["budget_multiplier"])
+    while vts is None and extra_rounds < 6:
+        inflate(1.6)
+        extra_rounds += 1
+        vts = budget_crossing_ts(events, baseline, p["budget_multiplier"])
     if vts is None:
         vts = events[-1]["ts"]
     return events, {
         "violation_ts": vts,
         "injection_start_ts": events[calls[start]]["ts"],
-        "n_injected_events": n_mutated,
+        "n_injected_events": len(calls) - start,
         "params": {"start_fraction": r6(start_frac), "token_multiplier": r6(mult),
+                   "extra_inflation_rounds": extra_rounds,
+                   "n_inflated_calls": len(calls) - start,
                    "budget_multiplier": p["budget_multiplier"]},
     }
 
@@ -751,6 +846,36 @@ def build_injection_plan(agents, eval_slots, seed_injection, prevalence, n_total
 # ---------------------------------------------------------------------------
 
 
+def session_layout_with_rates(seed_agents: int, agents: list[dict], n_days: int) -> dict:
+    """Session counts per agent-day + calibration/evaluation slot split.
+
+    Deterministic and order-independent (per-agent-day and per-agent RNG
+    streams), so generate_telemetry.py and evaluate.py reproduce the same
+    layout without exchanging state. Slot = (day, session_in_day); agent index
+    is the dict key for counts/calib_slots/eval_slots.
+
+    Returns {"counts", "calib_slots", "eval_slots", "n_total"}.
+    """
+    counts: dict[int, list[int]] = {}
+    n_total = 0
+    for agent in agents:
+        a = agent["agent_index"]
+        rate = agent["session_rate"]
+        row = [int(spawn_rng(seed_agents, "counts", a, d).poisson(rate)) for d in range(n_days)]
+        counts[a] = row
+        n_total += sum(row)
+
+    calib_slots: dict[int, list[tuple]] = {}
+    eval_slots: dict[int, list[tuple]] = {}
+    for a, row in counts.items():
+        all_slots = [(d, s) for d, cnt in enumerate(row) for s in range(cnt)]
+        perm = spawn_rng(seed_agents, "split", a).permutation(len(all_slots))
+        n_cal = int(round(len(all_slots) * CALIBRATION_SPLIT_FRACTION))
+        calib_slots[a] = [all_slots[i] for i in sorted(perm[:n_cal])]
+        eval_slots[a] = [all_slots[i] for i in sorted(perm[n_cal:])]
+    return {"counts": counts, "calib_slots": calib_slots, "eval_slots": eval_slots, "n_total": n_total}
+
+
 def generate_dataset(
     seed_agents: int = SEED_AGENTS,
     seed_injection: int = SEED_INJECTION,
@@ -764,27 +889,11 @@ def generate_dataset(
     agents = agents_full[:n_agents]
     contexts = build_agent_contexts(agents, class_matrices, class_starts, seed_agents)
 
-    # Session counts per agent-day (deterministic, independent of processing order)
-    counts: dict[int, list[int]] = {}
-    n_total = 0
-    for ctx in contexts:
-        a = ctx["agent"]["agent_index"]
-        rate = ctx["agent"]["session_rate"]
-        row = [int(spawn_rng(seed_agents, "counts", a, d).poisson(rate)) for d in range(n_days)]
-        counts[a] = row
-        n_total += sum(row)
-
-    # Split each agent's sessions into calibration / evaluation slots
-    eval_slots: dict[int, list[tuple]] = {}
-    calib_slots: dict[int, list[tuple]] = {}
-    for a, row in counts.items():
-        all_slots = [(d, s) for d, cnt in enumerate(row) for s in range(cnt)]
-        perm = spawn_rng(seed_agents, "split", a).permutation(len(all_slots))
-        n_cal = int(round(len(all_slots) * CALIBRATION_SPLIT_FRACTION))
-        cal = [all_slots[i] for i in sorted(perm[:n_cal])]
-        ev = [all_slots[i] for i in sorted(perm[n_cal:])]
-        calib_slots[a] = cal
-        eval_slots[a] = ev
+    layout = session_layout_with_rates(seed_agents, agents, n_days)
+    counts = layout["counts"]
+    calib_slots = layout["calib_slots"]
+    eval_slots = layout["eval_slots"]
+    n_total = layout["n_total"]
 
     plan = build_injection_plan(agents, eval_slots, seed_injection, prevalence, n_total)
     severities = load_taxonomy_severities()

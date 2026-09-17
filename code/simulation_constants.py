@@ -45,6 +45,7 @@ N_DAYS = 10
 SECONDS_PER_DAY = 86400.0
 EVAL_SPLIT_FRACTION = 0.40      # fraction of sessions held out for evaluation
 CALIBRATION_SPLIT_FRACTION = 1.0 - EVAL_SPLIT_FRACTION
+CALIB_FIT_FRACTION = 0.75       # calibration split: 75% fit / 25% operating-threshold calibration
 PREVALENCE_PRINCIPAL = 0.02     # anomalous fraction of the corpus (~1000 of ~50k)
 PREVALENCE_SWEEP = (0.005, 0.01, 0.02, 0.05, 0.10)
 THRESHOLD_PERTURBATIONS = (0.7, 1.0, 1.3)
@@ -217,7 +218,7 @@ def load_taxonomy_severities() -> dict[str, int]:
 INJECTION_PARAMS: dict[str, dict] = {
     "scope_creep": dict(
         start_fraction_range=(0.3, 0.6),
-        out_of_scope_fraction_range=(0.25, 0.6),
+        out_of_scope_fraction_range=(0.35, 0.7),
         scope_pool=RESTRICTED_SCOPE_POOL,
     ),
     "privilege_escalation_attempts": dict(
@@ -226,7 +227,7 @@ INJECTION_PARAMS: dict[str, dict] = {
     ),
     "runaway_loop": dict(
         cycle_length_range=(1, 3),
-        repetitions_range=(8, 20),
+        repetitions_range=(10, 24),
         budget_multiplier=3.0,
     ),
     "data_exfiltration": dict(
@@ -240,8 +241,8 @@ INJECTION_PARAMS: dict[str, dict] = {
         pivot_window_events_range=(3, 10),
     ),
     "cost_anomaly": dict(
-        start_fraction_range=(0.2, 0.5),
-        token_multiplier_range=(3.0, 8.0),
+        start_fraction_range=(0.1, 0.4),
+        token_multiplier_range=(4.0, 10.0),
         budget_multiplier=3.0,
     ),
     "silent_failure_masking": dict(
