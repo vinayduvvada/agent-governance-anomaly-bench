@@ -517,7 +517,7 @@ def inject_silent_failure_masking(events, ctx, rng):
     out: list[dict] = []
     n_added = 0
     removed = 0
-    prev_ts = float("-inf")
+    prev_ts = float(events[0]["ts"]) - 0.5  # retries on the first event must not seed from -inf
     for e in events:
         if e["event_type"] == "escalation":
             removed += 1
@@ -910,7 +910,9 @@ def generate_dataset(
         "session_id", "agent_id", "ts", "event_type", "tool_name",
         "latency_ms", "tokens", "cost", "target_scope", "approved",
     ])
-    # Validate the schema contract: ts strictly increasing within each session
+    # Validate the schema contract: finite, strictly increasing ts within each session
+    if not np.isfinite(sessions["ts"].to_numpy()).all():
+        raise AssertionError("non-finite ts values generated; injection re-timing bug")
     diffs = sessions.groupby("session_id", sort=False)["ts"].diff()
     bad_mask = (diffs <= 0).fillna(False)
     n_bad = int(bad_mask.sum())
