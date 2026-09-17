@@ -12054,7 +12054,8 @@
   "disclosure": "Fully synthetic benchmark. Illustrative parameters only; no product internals, customer data, or proprietary telemetry.",
   "n_agents": 500,
   "principal_seeds": {
-    "agents": 42
+    "agents": 42,
+    "injection": 4242
   },
   "schema_version": "1.0.0",
   "session_length_model": {
@@ -12247,6 +12248,34 @@
         "run_query"
       ]
     }
+  },
+  "telemetry": {
+    "anomaly_class_counts": {
+      "approval_gate_circumvention": 109,
+      "cost_anomaly": 108,
+      "cross_agent_collusion": 108,
+      "data_exfiltration": 109,
+      "privilege_escalation_attempts": 110,
+      "prompt_injection_compromise": 110,
+      "runaway_loop": 110,
+      "scope_creep": 111,
+      "silent_failure_masking": 110
+    },
+    "checksums_sha256": {
+      "anomaly_labels.csv": "238bc3349223cbe8d1a2f2fb24bb200580b2b475c8a99045d8d9dd516159f740",
+      "synthetic_sessions.csv": "4d6c4b310b18cc251784d2443a5153bba9822ecbc1209d3b41b26adc4081af09"
+    },
+    "files": {
+      "anomaly_labels_csv": "anomaly_labels.csv",
+      "synthetic_sessions_csv": "synthetic_sessions.csv"
+    },
+    "n_anomalous_sessions": 985,
+    "n_calibration_sessions": 29622,
+    "n_eval_sessions": 19755,
+    "n_events": 524497,
+    "n_sessions": 49377,
+    "notes": "All anomalies are injected into the evaluation split. Sessions absent from anomaly_labels.csv are benign by construction.",
+    "prevalence": 0.02
   },
   "tools": {
     "call_external_api": {
