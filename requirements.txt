@@ -1,0 +1,9 @@
+# Python dependencies for the synthetic-telemetry anomaly benchmark.
+# Install with: pip install -r requirements.txt
+#
+# All dependencies are CPU-only and run on a laptop.
+
+numpy>=1.26        # seeded RNG for agent population, session sampling, injection
+pandas>=2.0        # session/label tables (generate_telemetry.py, evaluate.py)
+scikit-learn>=1.4  # Isolation Forest (D3), ROC/PR curves, AUC metrics
+matplotlib>=3.8    # all figures (make_figures.py)

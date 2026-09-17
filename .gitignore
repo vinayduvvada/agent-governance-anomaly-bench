@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+
+# Generated data (regenerable; see README) — ground-truth labels and
+# metadata ARE tracked because they are the citable benchmark artifacts.
+data/synthetic_sessions.csv
+
+# Generated outputs (regenerable)
+results/*.json
+results/*.csv
+figures/*.png
+
+# LaTeX intermediates
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
