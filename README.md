@@ -50,6 +50,7 @@ agent-governance-anomaly-bench/
 │   ├── telemetry_event_schema.json  # machine-readable event schema (citable artifact)
 │   └── misbehavior_taxonomy.json    # classes, definitions, severity weights
 ├── code/
+│   ├── simulation_constants.py      # single source of truth for all illustrative parameters
 │   ├── generate_agents.py           # synthetic agent population + task profiles (seed=42)
 │   ├── generate_telemetry.py        # benign sessions + injected anomalies → data/sessions.csv
 │   ├── features.py                  # shared per-session feature extraction (all detectors)
@@ -120,11 +121,43 @@ All steps are seeded and byte-reproducible: regenerating
 | Benign + anomalous sessions | 42 (generation), 4242 (injection) | checksums recorded in metadata |
 | Sensitivity runs | 101 / 202 / 303 | full corpus regenerated per seed |
 
-## Results
+## Results (principal run: seed 42, 49,377 sessions, 985 injected anomalies)
 
-Filled in by the pipeline; see `results/` and `figures/` after running the
-steps above. Headline numbers and the coverage-gap heatmap are summarised in
-`paper/main.tex`.
+Headline comparison on the held-out evaluation split (19,755 sessions) at the
+headline alert budget of **0.1 false positives per agent-day**; thresholds are
+calibrated out-of-sample (75% fit / 25% threshold-calibration within the
+calibration split). Full numbers: `results/evaluation.json`,
+`results/coverage_gap.json`, `results/operating_points.json`,
+`results/sensitivity.json`; figures in `figures/`.
+
+| Detector | ROC-AUC | PR-AUC | Recall | Precision | FP/ad | Lead time (pre-viol. rate / median) |
+| --- | --- | --- | --- | --- | --- | --- |
+| D1 static rules | 0.890 | 0.686 | 0.625 | 0.738 | 0.115 | 0.48 / 21.9 s |
+| D2 per-agent baseline | **0.934** | **0.786** | **0.702** | **0.748** | 0.123 | **0.70 / 21.2 s** |
+| D3 isolation forest | 0.900 | 0.547 | 0.410 | 0.676 | 0.102 | 0.31 / 11.2 s |
+| D4 Markov sequence | 0.629 | 0.116 | 0.078 | 0.298 | 0.095 | 0.10 / 12.7 s |
+
+Coverage-gap matrix (per-class recall at 0.1 FP/agent-day; ROC-AUC in
+parentheses) — see `figures/fig1_coverage_gap_heatmap.png`:
+
+| Class | D1 | D2 | D3 | D4 |
+| --- | --- | --- | --- | --- |
+| Scope creep | 0.48 (0.81) | 0.59 (0.95) | 0.02 (0.82) | 0.04 (0.50) |
+| Privilege-escalation attempts | 0.55 (0.91) | 1.00 (0.98) | 0.35 (0.96) | 0.02 (0.52) |
+| Runaway loops | 0.93 (0.98) | 1.00 (0.99) | 0.72 (0.98) | 0.05 (0.65) |
+| Data exfiltration | 1.00 (0.999) | 1.00 (0.99) | 1.00 (0.998) | 0.30 (0.84) |
+| Prompt-injection compromise | 0.01 (0.47) | 0.01 (0.51) | 0.01 (0.49) | 0.02 (0.66) |
+| Cost anomalies | 0.22 (0.94) | 1.00 (0.99) | 0.86 (0.98) | 0.03 (0.52) |
+| Silent failure masking | 0.85 (0.93) | 0.43 (0.92) | 0.05 (0.83) | 0.00 (0.48) |
+| Approval-gate circumvention | 0.87 (0.92) | 0.56 (0.93) | 0.48 (0.97) | 0.18 (0.74) |
+| Cross-agent collusion | 0.73 (0.90) | 0.73 (0.96) | 0.23 (0.92) | 0.06 (0.71) |
+
+Sensitivity (`results/sensitivity.json`): recall at the fixed alert budget is
+prevalence-invariant across 0.5–10% anomaly prevalence (D2: 0.69–0.72); the
+coverage ranking is seed-stable for D1–D3 (Spearman 0.95–1.00 across seeds
+101/202/303, class-level AUC drift ≤ 0.065) and noisier for D4 (0.72–0.78,
+low-recall regime); a −30% threshold mis-setting raises D2 recall to 0.83 but
+its alert cost to 0.46 FP/agent-day (≈4× budget).
 
 ## Limitations
 
