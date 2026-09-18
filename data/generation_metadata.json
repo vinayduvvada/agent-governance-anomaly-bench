@@ -81,6 +81,7 @@
       "declared_scopes": [
         "workspace:delta-003",
         "sandbox:sb-003",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -227,6 +228,7 @@
       "declared_scopes": [
         "workspace:juniper-009",
         "sandbox:sb-009",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -373,6 +375,7 @@
       "declared_scopes": [
         "workspace:pivot-015",
         "sandbox:sb-015",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -516,6 +519,7 @@
       "declared_scopes": [
         "workspace:vertex-021",
         "sandbox:sb-021",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -660,6 +664,7 @@
       "declared_scopes": [
         "workspace:delta-027",
         "sandbox:sb-027",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -806,6 +811,7 @@
       "declared_scopes": [
         "workspace:juniper-033",
         "sandbox:sb-033",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -950,6 +956,7 @@
       "declared_scopes": [
         "workspace:pivot-039",
         "sandbox:sb-039",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1096,6 +1103,7 @@
       "declared_scopes": [
         "workspace:vertex-045",
         "sandbox:sb-045",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1241,6 +1249,7 @@
       "declared_scopes": [
         "workspace:delta-051",
         "sandbox:sb-051",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1386,6 +1395,7 @@
       "declared_scopes": [
         "workspace:juniper-057",
         "sandbox:sb-057",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1528,6 +1538,7 @@
       "declared_scopes": [
         "workspace:pivot-063",
         "sandbox:sb-063",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1673,6 +1684,7 @@
       "declared_scopes": [
         "workspace:vertex-069",
         "sandbox:sb-069",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1819,6 +1831,7 @@
       "declared_scopes": [
         "workspace:delta-075",
         "sandbox:sb-075",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -1963,6 +1976,7 @@
       "declared_scopes": [
         "workspace:juniper-081",
         "sandbox:sb-081",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2105,6 +2119,7 @@
       "declared_scopes": [
         "workspace:pivot-087",
         "sandbox:sb-087",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2250,6 +2265,7 @@
       "declared_scopes": [
         "workspace:vertex-093",
         "sandbox:sb-093",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2393,6 +2409,7 @@
       "declared_scopes": [
         "workspace:delta-099",
         "sandbox:sb-099",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2539,6 +2556,7 @@
       "declared_scopes": [
         "workspace:juniper-105",
         "sandbox:sb-105",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2684,6 +2702,7 @@
       "declared_scopes": [
         "workspace:pivot-111",
         "sandbox:sb-111",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2831,6 +2850,7 @@
       "declared_scopes": [
         "workspace:vertex-117",
         "sandbox:sb-117",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -2976,6 +2996,7 @@
       "declared_scopes": [
         "workspace:delta-123",
         "sandbox:sb-123",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3120,6 +3141,7 @@
       "declared_scopes": [
         "workspace:juniper-129",
         "sandbox:sb-129",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3267,6 +3289,7 @@
       "declared_scopes": [
         "workspace:pivot-135",
         "sandbox:sb-135",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3411,6 +3434,7 @@
       "declared_scopes": [
         "workspace:vertex-141",
         "sandbox:sb-141",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3555,6 +3579,7 @@
       "declared_scopes": [
         "workspace:delta-147",
         "sandbox:sb-147",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3698,6 +3723,7 @@
       "declared_scopes": [
         "workspace:juniper-153",
         "sandbox:sb-153",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3842,6 +3868,7 @@
       "declared_scopes": [
         "workspace:pivot-159",
         "sandbox:sb-159",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -3986,6 +4013,7 @@
       "declared_scopes": [
         "workspace:vertex-165",
         "sandbox:sb-165",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4132,6 +4160,7 @@
       "declared_scopes": [
         "workspace:delta-171",
         "sandbox:sb-171",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4278,6 +4307,7 @@
       "declared_scopes": [
         "workspace:juniper-177",
         "sandbox:sb-177",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4421,6 +4451,7 @@
       "declared_scopes": [
         "workspace:pivot-183",
         "sandbox:sb-183",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4566,6 +4597,7 @@
       "declared_scopes": [
         "workspace:vertex-189",
         "sandbox:sb-189",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4711,6 +4743,7 @@
       "declared_scopes": [
         "workspace:delta-195",
         "sandbox:sb-195",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -4856,6 +4889,7 @@
       "declared_scopes": [
         "workspace:juniper-201",
         "sandbox:sb-201",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5000,6 +5034,7 @@
       "declared_scopes": [
         "workspace:pivot-207",
         "sandbox:sb-207",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5143,6 +5178,7 @@
       "declared_scopes": [
         "workspace:vertex-213",
         "sandbox:sb-213",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5290,6 +5326,7 @@
       "declared_scopes": [
         "workspace:delta-219",
         "sandbox:sb-219",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5434,6 +5471,7 @@
       "declared_scopes": [
         "workspace:juniper-225",
         "sandbox:sb-225",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5578,6 +5616,7 @@
       "declared_scopes": [
         "workspace:pivot-231",
         "sandbox:sb-231",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5720,6 +5759,7 @@
       "declared_scopes": [
         "workspace:vertex-237",
         "sandbox:sb-237",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -5862,6 +5902,7 @@
       "declared_scopes": [
         "workspace:delta-243",
         "sandbox:sb-243",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6006,6 +6047,7 @@
       "declared_scopes": [
         "workspace:juniper-249",
         "sandbox:sb-249",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6150,6 +6192,7 @@
       "declared_scopes": [
         "workspace:pivot-255",
         "sandbox:sb-255",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6296,6 +6339,7 @@
       "declared_scopes": [
         "workspace:vertex-261",
         "sandbox:sb-261",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6440,6 +6484,7 @@
       "declared_scopes": [
         "workspace:delta-267",
         "sandbox:sb-267",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6583,6 +6628,7 @@
       "declared_scopes": [
         "workspace:juniper-273",
         "sandbox:sb-273",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6729,6 +6775,7 @@
       "declared_scopes": [
         "workspace:pivot-279",
         "sandbox:sb-279",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -6875,6 +6922,7 @@
       "declared_scopes": [
         "workspace:vertex-285",
         "sandbox:sb-285",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7019,6 +7067,7 @@
       "declared_scopes": [
         "workspace:delta-291",
         "sandbox:sb-291",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7163,6 +7212,7 @@
       "declared_scopes": [
         "workspace:juniper-297",
         "sandbox:sb-297",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7309,6 +7359,7 @@
       "declared_scopes": [
         "workspace:pivot-303",
         "sandbox:sb-303",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7456,6 +7507,7 @@
       "declared_scopes": [
         "workspace:vertex-309",
         "sandbox:sb-309",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7603,6 +7655,7 @@
       "declared_scopes": [
         "workspace:delta-315",
         "sandbox:sb-315",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7748,6 +7801,7 @@
       "declared_scopes": [
         "workspace:juniper-321",
         "sandbox:sb-321",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -7892,6 +7946,7 @@
       "declared_scopes": [
         "workspace:pivot-327",
         "sandbox:sb-327",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8037,6 +8092,7 @@
       "declared_scopes": [
         "workspace:vertex-333",
         "sandbox:sb-333",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8182,6 +8238,7 @@
       "declared_scopes": [
         "workspace:delta-339",
         "sandbox:sb-339",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8329,6 +8386,7 @@
       "declared_scopes": [
         "workspace:juniper-345",
         "sandbox:sb-345",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8474,6 +8532,7 @@
       "declared_scopes": [
         "workspace:pivot-351",
         "sandbox:sb-351",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8618,6 +8677,7 @@
       "declared_scopes": [
         "workspace:vertex-357",
         "sandbox:sb-357",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8762,6 +8822,7 @@
       "declared_scopes": [
         "workspace:delta-363",
         "sandbox:sb-363",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -8907,6 +8968,7 @@
       "declared_scopes": [
         "workspace:juniper-369",
         "sandbox:sb-369",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9051,6 +9113,7 @@
       "declared_scopes": [
         "workspace:pivot-375",
         "sandbox:sb-375",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9196,6 +9259,7 @@
       "declared_scopes": [
         "workspace:vertex-381",
         "sandbox:sb-381",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9341,6 +9405,7 @@
       "declared_scopes": [
         "workspace:delta-387",
         "sandbox:sb-387",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9485,6 +9550,7 @@
       "declared_scopes": [
         "workspace:juniper-393",
         "sandbox:sb-393",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9627,6 +9693,7 @@
       "declared_scopes": [
         "workspace:pivot-399",
         "sandbox:sb-399",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9771,6 +9838,7 @@
       "declared_scopes": [
         "workspace:vertex-405",
         "sandbox:sb-405",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -9913,6 +9981,7 @@
       "declared_scopes": [
         "workspace:delta-411",
         "sandbox:sb-411",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10059,6 +10128,7 @@
       "declared_scopes": [
         "workspace:juniper-417",
         "sandbox:sb-417",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10202,6 +10272,7 @@
       "declared_scopes": [
         "workspace:pivot-423",
         "sandbox:sb-423",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10345,6 +10416,7 @@
       "declared_scopes": [
         "workspace:vertex-429",
         "sandbox:sb-429",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10489,6 +10561,7 @@
       "declared_scopes": [
         "workspace:delta-435",
         "sandbox:sb-435",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10633,6 +10706,7 @@
       "declared_scopes": [
         "workspace:juniper-441",
         "sandbox:sb-441",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10776,6 +10850,7 @@
       "declared_scopes": [
         "workspace:pivot-447",
         "sandbox:sb-447",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -10922,6 +10997,7 @@
       "declared_scopes": [
         "workspace:vertex-453",
         "sandbox:sb-453",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11065,6 +11141,7 @@
       "declared_scopes": [
         "workspace:delta-459",
         "sandbox:sb-459",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11212,6 +11289,7 @@
       "declared_scopes": [
         "workspace:juniper-465",
         "sandbox:sb-465",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11357,6 +11435,7 @@
       "declared_scopes": [
         "workspace:pivot-471",
         "sandbox:sb-471",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11500,6 +11579,7 @@
       "declared_scopes": [
         "workspace:vertex-477",
         "sandbox:sb-477",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11646,6 +11726,7 @@
       "declared_scopes": [
         "workspace:delta-483",
         "sandbox:sb-483",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11791,6 +11872,7 @@
       "declared_scopes": [
         "workspace:juniper-489",
         "sandbox:sb-489",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -11936,6 +12018,7 @@
       "declared_scopes": [
         "workspace:pivot-495",
         "sandbox:sb-495",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],
@@ -12077,6 +12160,7 @@
       "scope_template": [
         "workspace:{ws}",
         "sandbox:{sb}",
+        "db:dev",
         "system:logs",
         "knowledge:kb"
       ],

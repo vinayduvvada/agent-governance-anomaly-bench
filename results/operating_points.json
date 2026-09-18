@@ -1,0 +1,70 @@
+{
+  "D1": {
+    "0.02": {
+      "fp_per_agent_day_eval": 0.017362184336707512,
+      "n_flagged_benign_eval": 33,
+      "threshold": 1.6514151986437682
+    },
+    "0.1": {
+      "fp_per_agent_day_eval": 0.11522176877996805,
+      "n_flagged_benign_eval": 219,
+      "threshold": 1.0
+    },
+    "0.5": {
+      "fp_per_agent_day_eval": 0.5145520085242409,
+      "n_flagged_benign_eval": 978,
+      "threshold": 0.223694714992815
+    }
+  },
+  "D2": {
+    "0.02": {
+      "fp_per_agent_day_eval": 0.0252540863079382,
+      "n_flagged_benign_eval": 48,
+      "threshold": 7.13501272851968
+    },
+    "0.1": {
+      "fp_per_agent_day_eval": 0.12258754395311669,
+      "n_flagged_benign_eval": 233,
+      "threshold": 5.1264
+    },
+    "0.5": {
+      "fp_per_agent_day_eval": 0.5098168673415024,
+      "n_flagged_benign_eval": 969,
+      "threshold": 3.4252124757149733
+    }
+  },
+  "D3": {
+    "0.02": {
+      "fp_per_agent_day_eval": 0.01788831113478956,
+      "n_flagged_benign_eval": 34,
+      "threshold": 0.11449775643228954
+    },
+    "0.1": {
+      "fp_per_agent_day_eval": 0.1020685988279169,
+      "n_flagged_benign_eval": 194,
+      "threshold": 0.06192259720331217
+    },
+    "0.5": {
+      "fp_per_agent_day_eval": 0.4992943313798615,
+      "n_flagged_benign_eval": 949,
+      "threshold": -0.003124072056343352
+    }
+  },
+  "D4": {
+    "0.02": {
+      "fp_per_agent_day_eval": 0.021045071923281835,
+      "n_flagged_benign_eval": 40,
+      "threshold": 3.713052011788919
+    },
+    "0.1": {
+      "fp_per_agent_day_eval": 0.0952289504528503,
+      "n_flagged_benign_eval": 181,
+      "threshold": 2.8876130159060756
+    },
+    "0.5": {
+      "fp_per_agent_day_eval": 0.4445771443793287,
+      "n_flagged_benign_eval": 845,
+      "threshold": 2.023814103390762
+    }
+  }
+}

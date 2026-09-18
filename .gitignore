@@ -10,10 +10,12 @@ __pycache__/
 # metadata ARE tracked because they are the citable benchmark artifacts.
 data/synthetic_sessions.csv
 
-# Generated outputs (regenerable)
-results/*.json
-results/*.csv
-figures/*.png
+# Generated per-session intermediates (regenerable)
+results/scores.csv
+results/lead_times.csv
+
+# Note: results/*.json (headline benchmark numbers) and figures/*.png are
+# tracked: for a benchmark, the numbers are the artifact.
 
 # LaTeX intermediates
 paper/*.aux
